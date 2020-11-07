@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-breadcrumb">
     <a-breadcrumb>
       <a-breadcrumb-item v-for="(item, index) in levelList" :key="index">
         <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
@@ -66,6 +66,10 @@ export default {
 </script>
 
 <style>
+.main-breadcrumb {
+  padding: 0 23px;
+  padding-top: 11px;
+}
 .fade-transform-leave-active,
 .fade-transform-enter-active {
   transition: all .5s;

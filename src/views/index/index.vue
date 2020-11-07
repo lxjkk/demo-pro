@@ -87,56 +87,19 @@
       </div>
     </div>
 
-    <a-modal :title="ModalTitle" :visible="visible" :confirm-loading="confirmLoading" @ok="handleOk"
-      @cancel="handleCancel">
-      <p>
-        <a-row class="l-flex-align-center">
-          <a-col :span="4" style="text-align: end;padding-right: 10px">
-            <label class="">类型</label>
-          </a-col>
-          <a-col :span="20">
-
-            <a-radio-group v-decorator="['radio-group']">
-              <a-radio value="a" checked>
-                充值
-              </a-radio>
-              <a-radio value="b">
-                返还
-              </a-radio>
-            </a-radio-group>
-          </a-col>
-        </a-row>
-      </p>
-
-      <p>
-        <a-row class="l-flex-align-center">
-          <a-col :span="4" style="text-align: end;padding-right: 10px">
-            <label class="">充值数量</label>
-          </a-col>
-          <a-col :span="20">
-            <a-input-number :min="1" style="width: 100%" />
-          </a-col>
-        </a-row>
-      </p>
-
-      <p>
-        <a-row class="l-flex-align-center">
-          <a-col :span="4" style="text-align: end;padding-right: 10px">
-            <label class="">备注</label>
-          </a-col>
-          <a-col :span="20">
-            <a-input placeholder="请输入" />
-          </a-col>
-        </a-row>
-      </p>
-    </a-modal>
+    <top-up :title="ModalTitle" :visible.sync="visible" />
   </div>
 </template>
 
 <script>
 import { getImSiteList } from '@/api/get'
+import topUp from '@/component/top-up.vue'
+
 export default {
   name: 'index',
+  components: {
+    topUp
+  },
   data () {
     return {
       title: '即时通讯IM服务管理',
@@ -349,8 +312,12 @@ export default {
   },
   methods: {
     async getList () {
-      const { data } = await getImSiteList(this.form)
-      console.log(data)
+      try {
+        const { data } = await getImSiteList(this.form)
+        console.log(data)
+      } catch (e) {
+        console.log(e)
+      }
     },
     details (item) {
       console.log(item)

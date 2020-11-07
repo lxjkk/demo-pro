@@ -30,10 +30,22 @@ const DETAILS_STATUS_TEXT = {
   1: '正常',
   2: '列队中'
 }
+const ANEW_UP_STATUS = {
+  0: '上传失败',
+  1: '上传完成',
+  2: '正在上传'
+}
+const ANEW_UP_STATUS_DESC = {
+  0: '网络错误',
+  1: '应用接口已经恢复',
+  2: '请勿关闭窗口'
+}
 const YourConsts = {}
 YourConsts.install = function (Vue, options) {
   Vue.prototype.$IM_LIST_CONFING_INFO = IM_LIST_CONFING_INFO
   Vue.prototype.$DETAILS_STATUS_CLASS = DETAILS_STATUS_CLASS
   Vue.prototype.$DETAILS_STATUS_TEXT = DETAILS_STATUS_TEXT
+  Vue.prototype.$ANEW_UP_STATUS = ANEW_UP_STATUS
+  Vue.prototype.$ANEW_UP_STATUS_DESC = ANEW_UP_STATUS_DESC
 }
 export default YourConsts

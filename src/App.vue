@@ -6,7 +6,7 @@
 <script>
 export default {
   mounted () {
-    document.querySelector('body').setAttribute('style', 'background-color:#e7e9eb')
+    document.querySelector('body').setAttribute('style', 'background-color:#E9F2F9')
   }
 }
 </script>
@@ -15,7 +15,6 @@ export default {
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
-  padding: 0 23px;
-  padding-top: 11px;
+  min-width: 1160px;
 }
 </style>

@@ -10,46 +10,44 @@
 
     <basic-info />
 
+    <div class="basics-info l-container">
+      <p class="title">数据概览</p>
+      <div class="l-flex">
+        <data-look title="今日搜索量（次）" :count="999" :rate="9.9" isWeek />
+        <data-look title="昨日搜索量（次）" :count="999" :rate="9.9" isRate isWeek />
+        <data-look title="平均耗时（ms）" :count="999" />
+        <data-look title="总内容数（篇）" :count="9399" />
+        <data-look title="总搜索量（次）" :count="999" active />
+      </div>
+    </div>
+
     <div class="tail-info l-container">
       <a-tabs default-active-key="1">
-        <a-tab-pane key="1" tab="收发日志">
+        <a-tab-pane key="1" tab="搜索日志" force-render>
           <div class="l-flex-between main-search">
-            <div class="l-flex">
-              <div class="l-flex-align-center" style="margin-right: 24px">
-                <div class="search-text">关键字：</div>
-                <div class="search-inp">
-                  <a-input placeholder="搜索编号、内容、用户" />
-                </div>
-              </div>
-              <div class="l-flex-align-center">
-                <div class="search-text">收发时间：</div>
-                <div class="search-inp">
-                  <a-range-picker @change="pickerOnChange">
-                    <a-icon slot="suffixIcon" type="calendar" />
-                  </a-range-picker>
-                </div>
+            <div class="l-flex-align-center">
+              <div class="search-text">关键字：</div>
+              <div class="search-inp">
+                <a-input placeholder="搜索网站名称、网站号、域名" />
               </div>
             </div>
             <div>
-              <a-button style="margin-right: 9px">重置</a-button>
+              <a-button style="margin-right: 8px">重置</a-button>
               <a-button type="primary">查询</a-button>
             </div>
           </div>
+
           <div class="l-flex list-data">
             <div class="info">
               <span>{{ '全部' + '  ' + 213 }}</span>
             </div>
             <div class="info l-flex-end">
               <div class="lamp lamp-on"></div>
-              <span>{{ '成功' + '  ' + 213 }}</span>
+              <span>{{ '正常' + '  ' + 213 }}</span>
             </div>
             <div class="info l-flex-end">
               <div class="lamp lamp-off"></div>
-              <span>{{ '失败' + '  ' + 213 }}</span>
-            </div>
-            <div class="info l-flex-end">
-              <div class="lamp lamp-air"></div>
-              <span>{{ '列队中' + '  ' + 213 }}</span>
+              <span>{{ '停用' + '  ' + 213 }}</span>
             </div>
           </div>
 
@@ -58,8 +56,9 @@
               selectedKeys,
               column
             }" style="padding: 9px 12px">
-               <a-input-search :placeholder="`搜索${column.title}`" :value="selectedKeys[0]" style="width: 120px;margin-bottom: 17px" @search="onSearch" />
-             <div class="l-flex-between">
+              <a-input-search v-ant-ref="(c) => (searchInput = c)" :placeholder="`搜索${column.title}`"
+                :value="selectedKeys[0]" style="width: 120px;margin-bottom: 17px" @search="onSearch" />
+              <div class="l-flex-between">
                 <a>搜索</a>
                 <a class="reset">重置</a>
               </div>
@@ -81,10 +80,33 @@
 
             <a-icon slot="filterIcon" slot-scope="filtered" type="search"
               :style="{ color: filtered ? '#108ee9' : undefined }" />
+            <template slot="customRender" slot-scope="text, record, index, column">
+              <span v-if="searchText && searchedColumn === column.dataIndex">
+                <template v-for="(fragment, i) in text
+                  .toString()
+                  .split(
+                    new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')
+                  )">
+                  <mark v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i"
+                    class="highlight">{{ fragment }}</mark>
+                  <template v-else>{{ fragment }}</template>
+                </template>
+              </span>
+              <template v-else>
+                {{ text }}
+              </template>
+            </template>
             <template slot="status" slot-scope="record">
               <div class="l-flex-align-center">
-                <div class="status-lamp" :class="$DETAILS_STATUS_CLASS[record]"></div>
-                <span>{{ $DETAILS_STATUS_TEXT[record] }}</span>
+                <div class="status-lamp" :class="record?'lamp-on':'lamp-off'"></div>
+                <span>{{ record?'正常':'停用' }}</span>
+              </div>
+            </template>
+            <template slot="action" slot-scope="text,record">
+              <div>
+                <a style="margin-right: 16px" @click="$router.push({path:'/allsearch/details',query:{id: record}});"
+                  href="javascript:;">详情</a>
+                <a href="javascript:;" @click="showModal(record)">充值</a>
               </div>
             </template>
           </a-table>
@@ -92,32 +114,85 @@
             <a-pagination show-quick-jumper :show-total="(total) => `共 ${total} 条`" :default-current="2" :total="500" />
           </div>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="充值记录" force-render> 充值记录 </a-tab-pane>
+        <a-tab-pane key="2" tab="上传日志">
+          <div class="l-flex-between main-search">
+            <div class="l-flex">
+              <div class="l-flex-align-center" style="margin-right: 24px">
+                <div class="search-text">关键字：</div>
+                <div class="search-inp">
+                  <a-input placeholder="搜索编号、内容、用户" />
+                </div>
+              </div>
+              <div class="l-flex-align-center">
+                <div class="search-text">更新时间：</div>
+                <div class="search-inp">
+                  <a-range-picker @change="pickerOnChange">
+                    <a-icon slot="suffixIcon" type="calendar" />
+                  </a-range-picker>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a-button style="margin-right: 9px">重置</a-button>
+              <a-button type="primary">查询</a-button>
+            </div>
+          </div>
+
+          <a-table :data-source="data" :columns="columns" :pagination="false">
+            <div slot="filterDropdown" slot-scope="{
+              selectedKeys,
+              column
+            }" style="padding: 9px 12px">
+              <a-input-search :placeholder="`搜索${column.title}`" :value="selectedKeys[0]"
+                style="width: 120px;margin-bottom: 17px" @search="onSearch" />
+              <div class="l-flex-between">
+                <a>搜索</a>
+                <a class="reset">重置</a>
+              </div>
+            </div>
+
+            <a-icon slot="filterIcon" slot-scope="filtered" type="search"
+              :style="{ color: filtered ? '#108ee9' : undefined }" />
+          </a-table>
+          <div class="l-flex-end" style="margin-top: 16px">
+            <a-pagination show-quick-jumper :show-total="(total) => `共 ${total} 条`" :default-current="2" :total="500" />
+          </div>
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="充值记录">
+          充值记录
+        </a-tab-pane>
+        <a-tab-pane key="4" tab="内容库">
+          内容库
+        </a-tab-pane>
         <div class="tabs-solt" slot="tabBarExtraContent">
           <a-button style="margin-right: 26px">导出数据</a-button>
           <a-icon type="redo" />
         </div>
       </a-tabs>
     </div>
+      <progress-bar :visible.sync="visible" @anew-up="anewUp" />
   </div>
 </template>
 
 <script>
-import transformTime from '@/utils/transformTime.js'
-import toThousands from '@/utils/toThousands.js'
 import basicInfo from '@/component/basic-info'
+import dataLook from '@/component/data-look.vue'
+import progressBar from '@/component/progress-bar.vue'
 const plainOptions = ['成功', '失败', '列队中']
 const defaultCheckedList = ['成功', '失败', '列队中']
 export default {
   components: {
-    basicInfo
+    basicInfo,
+    dataLook,
+    progressBar
   },
   data () {
     return {
       title: '短说社区',
+      visible: false,
+      checkAll: false,
       checkedList: defaultCheckedList,
       indeterminate: true,
-      checkAll: false,
       plainOptions,
       data: [
         {
@@ -128,80 +203,7 @@ export default {
           version: '2.9.0',
           strip: 20,
           status: 1
-        },
-        {
-          key: '2',
-          name: '111',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '3',
-          name: '1111',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '4',
-          name: '111',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '5',
-          name: '11',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '6',
-          name: '22',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '7',
-          name: '33',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '8',
-          name: '4',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '9',
-          name: '55',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 2
-        }
-      ],
+        }],
       columns: [
         {
           title: 'ID',
@@ -210,7 +212,7 @@ export default {
           key: 'name'
         },
         {
-          title: '内容',
+          title: '搜索词',
           dataIndex: 'address',
           key: 'www',
           scopedSlots: {
@@ -227,9 +229,9 @@ export default {
           }
         },
         {
-          title: '发送方',
+          title: '用户',
           dataIndex: 'age',
-          width: 200,
+          width: 220,
           key: 'cn',
           scopedSlots: {
             filterDropdown: 'filterDropdown'
@@ -248,60 +250,33 @@ export default {
           }
         },
         {
-          title: '收取方',
-          width: 200,
+          title: '执行状态',
+          width: 160,
           dataIndex: 'version',
           key: 'num',
           scopedSlots: {
-            filterDropdown: 'filterDropdown'
-          },
-          onFilter: (value, record) =>
-            record.address
-              .toString()
-              .toLowerCase()
-              .includes(value.toLowerCase()),
-          onFilterDropdownVisibleChange: (visible) => {
-            if (visible) {
-              setTimeout(() => {
-                this.searchInput.focus()
-              })
-            }
+            filterDropdown: 'checkDropdown',
+            customRender: 'status'
           }
         },
         {
-          title: '执行状态',
+          title: '耗时（ms）',
           dataIndex: 'status',
+          align: 'end',
           width: 160,
           key: 'address',
-          scopedSlots: {
-            customRender: 'status',
-            filterDropdown: 'checkDropdown'
-          }
+          sorter: true
         },
         {
-          title: '收发时间',
-          width: 210,
+          title: '搜索时间',
+          width: 260,
           dataIndex: 'strip',
-          key: 'state',
-          sorter: true
+          key: 'state'
         }
       ]
     }
   },
-  filters: {
-    openTime (val) {
-      if (val) {
-        return transformTime(val)
-      }
-    },
-    toNum (val) {
-      if (val) {
-        return toThousands(val)
-      }
-    }
-  },
   created () {
-    console.log(this.$route.query.id)
     this.$route.meta.title = '短说'
   },
   methods: {
@@ -316,23 +291,40 @@ export default {
         checkAll: e.target.checked
       })
     },
-    onSearch (e) {
-      console.log(e)
+    stopService () {
+      const a = false
+      const that = this
+      if (a) {
+        this.$confirm({
+          centered: true,
+          title: '是否停用服务',
+          content: '停用服务将影响该站点的运营,请谨慎操作 ',
+          icon: 'info-circle',
+          onOk () {
+            console.log('调用成功')
+          }
+        })
+      } else {
+        this.$confirm({
+          centered: true,
+          title: '是否启用服务',
+          content: '全文搜索服务启用可能需要较长时间上传数据，期间该站点将无法正常使用',
+          icon: 'info-circle',
+          onOk () {
+            that.visible = true
+          }
+        })
+      }
     },
     pickerOnChange (e) {
       console.log(e)
     },
-    // 停用服务
-    stopService () {
-      this.$confirm({
-        centered: true,
-        title: '是否停用服务',
-        content: '停用服务将影响该站点的运营,请谨慎操作 ',
-        icon: 'info-circle',
-        onOk () {
-          console.log('调用成功')
-        }
-      })
+    onSearch (e) {
+      console.log(e)
+    },
+    // 重新上传
+    anewUp (data) {
+      console.log(data)
     }
   }
 }
@@ -362,7 +354,6 @@ export default {
   }
 
   .basics-info {
-    height: 148px;
     span {
       color: #555658;
     }
@@ -470,9 +461,5 @@ export default {
     border-radius: 50%;
     margin-right: 8px;
   }
-}
-
-.reset {
-    color: #555658
 }
 </style>
