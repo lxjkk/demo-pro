@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="main-title">
-      <div><span v-text="title"></span></div>
+      <div><span v-text="isUser?'即时通讯IM':title"></span></div>
       <div>
         <a-button class="btn-data">导出数据</a-button>
         <a-icon type="redo" />
@@ -75,7 +75,7 @@
           </template>
           <template slot="action" slot-scope="text,record">
             <div>
-              <a style="margin-right: 16px" @click="$router.push({path:'/imserver/details',query:{id: record}});"
+              <a style="margin-right: 16px" @click="$router.push({path:'/tem/imserver/'+$route.params.id+'/details',query:{id: record}});"
                 href="javascript:;">详情</a>
               <a href="javascript:;" @click="showModal(record)">充值</a>
             </div>
@@ -347,102 +347,102 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.main {
-  @info-lamp: #909399;
-  @status-color: #1890ff;
-  color: #000000;
-  font-size: 14px;
-  padding-top: 9px;
-  .main-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .btn-data {
-      margin-right: 26px;
+  .main {
+    @info-lamp: #909399;
+    @status-color: #1890ff;
+    color: #000000;
+    font-size: 14px;
+    padding-top: 9px;
+    .main-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .btn-data {
+        margin-right: 26px;
+      }
+      span {
+        font-size: 20px;
+        font-weight: 500;
+      }
     }
-    span {
-      font-size: 20px;
-      font-weight: 500;
-    }
-  }
 
-  .main-search {
-    height: 90px;
-    background-color: #ffffff;
-    padding: 0 24px;
-    margin: 16px 0;
-    .search-text {
-      width: 60px;
+    .main-search {
+      height: 90px;
+      background-color: #ffffff;
+      padding: 0 24px;
+      margin: 16px 0;
+      .search-text {
+        width: 60px;
+      }
+      .search-inp {
+        width: 290px;
+      }
+      .btn-m {
+        margin-right: 8px;
+      }
     }
-    .search-inp {
-      width: 290px;
-    }
-    .btn-m {
-      margin-right: 8px;
-    }
-  }
 
-  .main-list {
-    padding: 0 24px 24px 24px;
-    background-color: #ffffff;
-    .list-title {
-      height: 60px;
-      font-size: 16px;
-    }
-    .list-data {
-      margin-bottom: 17px;
-      .info {
-        width: 80px;
-        color: @info-lamp;
-        &:nth-child(1) {
-          color: #000000;
-          font-weight: 500;
-          position: relative;
-          &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            border-right: 1px solid #e7e9eb;
+    .main-list {
+      padding: 0 24px 24px 24px;
+      background-color: #ffffff;
+      .list-title {
+        height: 60px;
+        font-size: 16px;
+      }
+      .list-data {
+        margin-bottom: 17px;
+        .info {
+          width: 80px;
+          color: @info-lamp;
+          &:nth-child(1) {
+            color: #000000;
+            font-weight: 500;
+            position: relative;
+            &::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              right: 0;
+              height: 100%;
+              border-right: 1px solid #e7e9eb;
+            }
           }
         }
-      }
-      .lamp {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        margin-right: 4px;
-        &:nth-child(1) {
+        .lamp {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          margin-right: 4px;
+          &:nth-child(1) {
+          }
+          &:nth-child(2) {
+            background-color: #d9d9d9;
+          }
         }
-        &:nth-child(2) {
+        .lamp-on {
+          background-color: @status-color;
+        }
+        .lamp-off {
           background-color: #d9d9d9;
         }
       }
-      .lamp-on {
-        background-color: @status-color;
-      }
-      .lamp-off {
-        background-color: #d9d9d9;
+      .pagination {
+        margin-top: 16px;
       }
     }
-    .pagination {
-      margin-top: 16px;
+    .status-lamp {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .lamp-on {
+      background-color: @status-color;
+    }
+    .lamp-off {
+      background-color: #d9d9d9;
     }
   }
-  .status-lamp {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  .lamp-on {
-    background-color: @status-color;
-  }
-  .lamp-off {
-    background-color: #d9d9d9;
-  }
-}
 .reset {
   color: #555658;
 }

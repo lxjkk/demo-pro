@@ -10,79 +10,85 @@ VueRouter.prototype.push = function push (location) {
 }
 const routes = [
   {
+    path: '/escape-service',
+    component: () => import('../views/About.vue'),
+    name: 'Indexs',
+    meta: { title: '首页', roles: ['user'] }
+  },
+  {
     path: '/',
     component: Layout,
-    redirect: '/imserver',
+    redirect: '/tem',
     name: 'Index',
     meta: { title: '首页', roles: ['admin', 'user'] },
     children: [{
-      path: '',
-      redirect: '/imserver',
-      component: () => import('../views/index/temp.vue'),
-      name: 'tem',
+      path: 'tem',
+      redirect: '/',
+      component: () => import('@/views/main.vue'),
       meta: { title: '服务管理', roles: ['admin', 'user'] },
       children: [{
-        path: 'imserver',
-        component: () => import('../views/index/temp.vue'),
-        name: 'imserver',
-        meta: { title: '即时通讯IM', roles: ['admin', 'user'] },
+        path: '',
+        component: () => import('@/views/extend/index.vue'),
+        name: 'tems',
+        meta: { roles: ['admin', 'user'] }
+      },
+      {
+        path: 'imserver/:id',
+        component: () => import('@/views/index/temp.vue'),
+        meta: { title: '即时通讯IM', roles: ['admin'] },
         children: [{
           path: '',
-          component: () => import('../views/index/index.vue'),
-          name: 'imserver',
-          meta: { title: '', roles: ['admin', 'user'] }
+          component: () => import('@/views/index/index.vue'),
+          name: 'imservers',
+          meta: { roles: ['admin'] }
         }, {
           path: 'details',
-          hidden: true,
           component: () => import('../views/index/details.vue'),
           name: 'Details',
-          meta: { title: '详情', roles: ['admin', 'user'] }
+          meta: { title: '详情', roles: ['admin'] }
         }]
-      }]
-    },
-    {
-      path: '',
-      redirect: '/allsearch',
-      component: () => import('../views/index/temp.vue'),
-      name: 'tem',
-      meta: { title: '服务管理', roles: ['admin', 'user'] },
-      children: [{
-        path: 'allsearch',
-        component: () => import('../views/index/temp.vue'),
-        name: 'allsearch',
-        meta: { title: '全文搜索', roles: ['admin', 'user'] },
+      },
+      {
+        path: 'allsearch/:id',
+        component: () => import('@/views/index/temp.vue'),
+        meta: { title: '全文搜索', roles: ['admin'] },
         children: [{
           path: '',
           component: () => import('../views/allsearch/index.vue'),
           name: 'allsearch',
-          meta: { title: '', roles: ['admin', 'user'] }
+          meta: { roles: ['admin'] }
         }, {
           path: 'details',
-          hidden: true,
           component: () => import('../views/allsearch/details.vue'),
-          name: 'Details',
-          meta: { title: '详情', roles: ['admin', 'user'] }
+          name: 'allsearchDetails',
+          meta: { title: '详情', roles: ['admin'] }
         }]
-      }]
-    },
-    {
-      path: '',
-      redirect: '/servicetcp',
-      component: () => import('../views/index/temp.vue'),
-      name: 'tem',
-      meta: { title: '服务管理', roles: ['admin', 'user'] },
-      children: [{
+      },
+      {
         path: 'serviceTcp',
         component: () => import('../views/index/temp.vue'),
-        name: 'serviceTcp',
         meta: { title: '服务协议', roles: ['admin', 'user'] },
         children: [{
           path: '',
           component: () => import('../views/serviceTcp'),
-          name: 'serviceTcp',
-          meta: { title: '', roles: ['admin', 'user'] }
+          name: 'serviceTcps',
+          meta: { title: '', roles: ['admin'] }
         }]
-      }]
+      },
+      // user: im search
+      {
+        path: 'user-imserver',
+        component: () => import('../views/index/details.vue'),
+        name: 'userDetails',
+        meta: { title: '即时通讯IM', roles: ['user'] }
+      },
+      {
+        path: 'user-allsearch',
+        component: () => import('../views/allsearch/details.vue'),
+        name: 'allsearchDetails',
+        meta: { title: '全文搜索', roles: ['admin', 'user'] }
+      }
+      ]
     }
     ]
   },

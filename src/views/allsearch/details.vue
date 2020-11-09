@@ -1,5 +1,19 @@
 <template>
-  <div class="main">
+  <div>
+    <div v-if="agreement && isUser" style="padding-top: 9px">
+      <div class="main-title" style="margin-bottom:16px">
+        <div><span v-text="title"></span></div>
+      </div>
+      <div class="l-flex-justcenter agreement">
+        <escape-component :image="2" title="您目前还没有开启全文搜索服务" content="ElasticSearch分布式搜索引擎，自动分词、关联搜索，可以有效提升搜索效率和精准度。" escape="全文搜索服务协议"
+          userDesc="本服务支持试用，开通后提供3000次免费调用，如有额外需要请联系客服" @grant="grant" @escape-privacy="escapePrivacy"
+          :checked.sync="checked" />
+        <escape-drawer :visibleDrawer.sync="visibleDrawer"
+          content="  一、外按地张就或变程派号题数期称合展率适难条特群四至现由准门走规劳平要根每路即红容重物太油资八及集用。多难三且华片增复总验影们更参然度引持必究共适便书只维状层名马入性增青。 二、断化术提己教满工属十可八文放改使手圆中层写见了生统调毛因十响情复按温积便将示共组么按常各率低并率南格支其规。"
+          title="编辑协议" @consent="consent" escapeType />
+      </div>
+    </div>
+    <div class="main" v-else>
     <div class="main-title">
       <div><span v-text="title"></span></div>
       <div>
@@ -172,28 +186,37 @@
     </div>
       <progress-bar :visible.sync="visible" @anew-up="anewUp" />
   </div>
+  </div>
 </template>
 
 <script>
+import { message } from 'ant-design-vue'
 import basicInfo from '@/component/basic-info'
 import dataLook from '@/component/data-look.vue'
 import progressBar from '@/component/progress-bar.vue'
+import escapeComponent from '@/component/escape-component'
+import escapeDrawer from '@/component/escape-drawer'
 const plainOptions = ['成功', '失败', '列队中']
 const defaultCheckedList = ['成功', '失败', '列队中']
 export default {
   components: {
     basicInfo,
     dataLook,
-    progressBar
+    progressBar,
+    escapeComponent,
+    escapeDrawer
   },
   data () {
     return {
-      title: '短说社区',
+      title: '',
       visible: false,
       checkAll: false,
       checkedList: defaultCheckedList,
       indeterminate: true,
       plainOptions,
+      agreement: true, // 协议
+      checked: false,
+      visibleDrawer: false,
       data: [
         {
           key: '1',
@@ -277,7 +300,7 @@ export default {
     }
   },
   created () {
-    this.$route.meta.title = '短说'
+    this.title = this.$route.meta.title.name ? this.$route.meta.title.name : '全文搜索'
   },
   methods: {
     checkOnChange (checkedList) {
@@ -325,33 +348,55 @@ export default {
     // 重新上传
     anewUp (data) {
       console.log(data)
+    },
+    // 协议
+    escapePrivacy (e) {
+      this.visibleDrawer = true
+    },
+    // 同意
+    consent (e) {
+      this.checked = e
+      this.visibleDrawer = false
+    },
+    // 立即开通
+    grant (e) {
+      console.log(e)
+      if (e) {
+        this.agreement = false
+      } else {
+        message.info('请同意协议!')
+      }
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.agreement {
+  height: calc(100vh - 110px);
+  background: #ffffff;
+}
+
+.main-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .btn-data {
+    margin-right: 8px;
+  }
+
+  span {
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
 .main {
   @info-lamp: #909399;
   @status-color: #52c41a;
   color: #000000;
   font-size: 14px;
   padding-top: 9px;
-
-  .main-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .btn-data {
-      margin-right: 8px;
-    }
-
-    span {
-      font-size: 20px;
-      font-weight: 500;
-    }
-  }
 
   .basics-info {
     span {

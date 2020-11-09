@@ -8,7 +8,9 @@
     </a-breadcrumb>
   <a-config-provider :locale="locale">
     <transition name="fade-transform" mode="out-in">
+      <keep-alive>
       <router-view :to="key"></router-view>
+      </keep-alive>
     </transition>
     </a-config-provider>
   </div>
@@ -17,6 +19,8 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
+import pathToRegexp from 'path-to-regexp'
+
 export default {
   data () {
     return {
@@ -42,24 +46,26 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
+    // 面包屑
     getBreadcrumb () {
-      // only show routes with meta.title
       const matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      // const first = matched[0]
-
-      // // if (!this.isDashboard(first)) {
-      // //   matched = [{ path: '/dashboard', meta: { title: '首页' } }].concat(matched)
-      // // }
-
+      console.log(this.$route.matched)
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+      console.log(this.levelList)
     },
+    // 将 router :id 转换为正则用于面包屑回退参数消失
+    pathCompile (path) {
+      const { params } = this.$route
+      var toPath = pathToRegexp.compile(path)
+      return toPath(params)
+    },
+    // 面包屑跳转
     handleLink (item) {
-      console.log(item)
       const { redirect, path } = item
       if (redirect) {
         this.$router.push(redirect)
       }
-      this.$router.push(path)
+      this.$router.push(this.pathCompile(path))
     }
   }
 }

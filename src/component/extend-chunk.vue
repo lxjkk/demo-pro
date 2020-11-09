@@ -2,7 +2,7 @@
   <div class="extend-chunk">
     <div class="l-flex-between">
       <span>{{title}}</span>
-      <div class="l-flex-allcenter">
+      <div class="l-flex-allcenter" v-if="open">
         <div :class="status?'lamp-air':'lamp-cloudy'"></div>
         <span>{{status?'正常':'停用'}}</span>
       </div>
@@ -13,7 +13,7 @@
       <div class="extend-count">{{count | toNum}}</div>
     </div>
     <div v-else class="l-flex-end">
-      <a-button type="primary" @click="$router.push({path:'/imserver',query:{id: 1}})">开通</a-button>
+      <a-button type="primary" @click="$emit('open')">开通</a-button>
     </div>
   </div>
 </template>

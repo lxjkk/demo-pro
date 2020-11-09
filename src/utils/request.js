@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 // import Qs from 'qs'
-const baseUrl = 'https://h5a.opensns.cn/admin/'
+const baseUrl = 'https://h5a.opensns.cn/'
 // if (process.env.NODE_ENV === 'development') {
 //   baseUrl = 'http://localhost:8081/api'
 //   console.log('测试环境')
@@ -13,14 +13,13 @@ const apiServer = axios.create({
   baseURL: baseUrl,
   timeout: 5000,
   withCredentials: true,
-  jsonp: 'handleCallback',
   headers: {
-    Accept: 'application/json'
+    contentType: 'application/json'
+
   }
 })
 
 apiServer.interceptors.request.use(config => {
-  config.headers.cookies = 'PHPSESSID=1qn0ti0tvb6g8102j9ul0h110k'
   return config
 }, err => {
   localStorage.removeItem('token')

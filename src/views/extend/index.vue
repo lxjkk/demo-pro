@@ -1,33 +1,37 @@
 <template>
-  <div class="main">
-    <div class="main-title">
-      <div><span v-text="title"></span></div>
-      <a-popover v-model="visible" trigger="click">
-        <div slot="content" style="width: 100px;cursor:pointer" @click="hide">服务协议</div>
-        <div class="main-popover l-flex-allcenter">···</div>
-      </a-popover>
-    </div>
-    <div class="main-container">
-      <a-input-search style="width:550px;margin-left: 24px" placeholder="搜索服务名称" enter-button="搜索" size="large"
-        @search="onSearch" />
-      <a-tabs default-active-key="1" class="main-tabs">
-        <a-tab-pane key="1" tab="全部">
-          <div class="l-flex main-grid">
-            <extendChunk title="即时通讯IM" open status desc="聊天、会话，文字图片收发" surplus="剩余收发量（条）" :count="1243" />
-            <extendChunk title="全文搜索" status desc="ElasticSearch分布式搜索引擎" surplus="剩余收发量（条）" :count="1243" />
-            <extendChunk title="即时通讯IM" status desc="聊天、会话，文字图片收发" surplus="剩余收发量（条）" :count="1243" />
-          </div>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="已开通">
-          已开通
-        </a-tab-pane>
-        <a-tab-pane key="3" tab="未开通">
-          未开通
-        </a-tab-pane>
-      </a-tabs>
-    </div>
+  <div>
+    <div class="main" v-if="isUser">
+      <div class="main-title">
+        <div><span v-text="title"></span></div>
+        <a-popover v-model="visible" trigger="click">
+          <div slot="content" style="width: 100px;cursor:pointer">服务协议</div>
+          <div class="main-popover l-flex-allcenter">···</div>
+        </a-popover>
+      </div>
+      <div class="main-container">
+        <a-input-search style="width:550px;margin-left: 24px" placeholder="搜索服务名称" enter-button="搜索" size="large"
+          @search="onSearch" />
+        <a-tabs default-active-key="1" class="main-tabs">
+          <a-tab-pane key="1" tab="全部">
+            <div class="l-flex main-grid">
+              <extendChunk title="即时通讯IM" status desc="聊天、会话，文字图片收发" surplus="剩余收发量（条）" :count="1243" @open="$router.push({path:'/tem/user-imserver'})" />
+              <extendChunk title="全文搜索" status desc="ElasticSearch分布式搜索引擎" surplus="剩余收发量（条）" :count="1243" @open="$router.push({path:'/tem/user-allsearch'})" />
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="已开通">
+            <a-empty style="margin-top: 150px" />
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="未开通">
+            未开通
+          </a-tab-pane>
+        </a-tabs>
+      </div>
 
-    <footer class="main-footer">Copyright©2014-2020 嘉兴想天科技信息有限公司 Powered by 短说OSX</footer>
+      <footer class="main-footer">Copyright©2014-2020 嘉兴想天科技信息有限公司 Powered by 短说OSX</footer>
+    </div>
+    <div v-else>
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -41,6 +45,18 @@ export default {
     return {
       title: '扩展服务',
       visible: false
+    }
+  },
+  beforeRouteEnter: (to, from, next) => {
+    next(vm => {
+      if (vm.isAdmin) {
+        console.log(vm.router)
+        vm.$router.push({ path: '/tem/imserver/10' })
+      }
+    })
+  },
+  created () {
+    if (this.isUser) {
     }
   },
   methods: {
@@ -103,7 +119,7 @@ export default {
     .main-grid {
       width: 100%;
       flex-wrap: wrap;
-      overflow: auto;
+      overflow-y: auto;
       padding-bottom: 10px;
       box-sizing: border-box;
     }
@@ -139,7 +155,6 @@ export default {
   }
   /deep/ .ant-tabs .ant-tabs-top-content {
     height: calc(100% - 45px);
-    overflow: auto;
   }
 }
 </style>

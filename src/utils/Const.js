@@ -40,6 +40,10 @@ const ANEW_UP_STATUS_DESC = {
   1: '应用接口已经恢复',
   2: '请勿关闭窗口'
 }
+const USER_TOP_UP_STATUS = {
+  0: '返还',
+  1: '充值'
+}
 const YourConsts = {}
 YourConsts.install = function (Vue, options) {
   Vue.prototype.$IM_LIST_CONFING_INFO = IM_LIST_CONFING_INFO
@@ -47,5 +51,6 @@ YourConsts.install = function (Vue, options) {
   Vue.prototype.$DETAILS_STATUS_TEXT = DETAILS_STATUS_TEXT
   Vue.prototype.$ANEW_UP_STATUS = ANEW_UP_STATUS
   Vue.prototype.$ANEW_UP_STATUS_DESC = ANEW_UP_STATUS_DESC
+  Vue.prototype.$USER_TOP_UP_STATUS = USER_TOP_UP_STATUS
 }
 export default YourConsts

@@ -5,7 +5,7 @@
         <a-col :span="6" style="margin-bottom: 16px">
           <div class="l-flex-align-center">
             服务状态：
-            <div class="lamp-air" />
+            <div :class="basicsData?'lamp-air':'lamp-gray'" />
             <span>{{ basicsData?'正常':'停用' }}</span>
           </div>
         </a-col>
@@ -75,12 +75,12 @@ export default {
     background-color: #1890ff;
     margin-right: 7px;
   }
-  .lamp-air {
+  .lamp-gray {
     box-sizing: initial;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    border: 2px solid #cee2f7;
+    border: 2px solid #c8d3df;
     background-color: #909399;
     margin-right: 7px;
   }
