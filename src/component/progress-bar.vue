@@ -3,7 +3,7 @@
     <a-modal centered closable :maskClosable="false" :keyboard="false" :visible="visible" @ok="handleOk"
       @cancel="$emit('update:visible', false)" footer="">
       <p class="status">{{ $ANEW_UP_STATUS[data.status] }}</p>
-      <a-progress :percent="50" :status="data.status? 'active':'exception'" style="margin-bottom:10px" />
+      <a-progress :percent="data.percent" :status="data.status? 'active':'exception'" style="margin-bottom:10px" />
       <span>{{$ANEW_UP_STATUS_DESC[data.status]}}</span>
       <div style="text-align: end">
 

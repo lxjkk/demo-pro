@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="main" v-if="isUser">
+    <div class="main">
       <div class="main-title">
         <div><span v-text="title"></span></div>
         <a-popover v-model="visible" trigger="click">
@@ -14,8 +14,8 @@
         <a-tabs default-active-key="1" class="main-tabs">
           <a-tab-pane key="1" tab="全部">
             <div class="l-flex main-grid">
-              <extendChunk title="即时通讯IM" status desc="聊天、会话，文字图片收发" surplus="剩余收发量（条）" :count="1243" @open="$router.push({path:'/tem/user-imserver'})" />
-              <extendChunk title="全文搜索" status desc="ElasticSearch分布式搜索引擎" surplus="剩余收发量（条）" :count="1243" @open="$router.push({path:'/tem/user-allsearch'})" />
+              <extendChunk title="即时通讯IM" status desc="聊天、会话，文字图片收发" surplus="剩余收发量（条）" :count="1243" @open="$router.push({path:'/user/utem/user-imserver'})" />
+              <extendChunk title="全文搜索" status desc="ElasticSearch分布式搜索引擎" surplus="剩余收发量（条）" :count="1243" open @open="$router.push({path:'/user/utem/user-allsearch'})" />
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="已开通">
@@ -28,9 +28,6 @@
       </div>
 
       <footer class="main-footer">Copyright©2014-2020 嘉兴想天科技信息有限公司 Powered by 短说OSX</footer>
-    </div>
-    <div v-else>
-      <router-view />
     </div>
   </div>
 </template>
@@ -47,14 +44,13 @@ export default {
       visible: false
     }
   },
-  beforeRouteEnter: (to, from, next) => {
-    next(vm => {
-      if (vm.isAdmin) {
-        console.log(vm.router)
-        vm.$router.push({ path: '/tem/imserver/10' })
-      }
-    })
-  },
+  // beforeRouteEnter: (to, from, next) => {
+  //   next(vm => {
+  //     if (vm.isAdmin) {
+  //       vm.$router.push({ path: from.path })
+  //     }
+  //   })
+  // },
   created () {
     if (this.isUser) {
     }

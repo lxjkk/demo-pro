@@ -1,5 +1,5 @@
 <template>
-  <div class="extend-chunk">
+  <div class="extend-chunk" :class="open?'chunk-cursor':''" @click="open?$emit('open'):''">
     <div class="l-flex-between">
       <span>{{title}}</span>
       <div class="l-flex-allcenter" v-if="open">
@@ -73,7 +73,7 @@ export default {
   position: relative;
   &:hover{
     border-radius: 2px;
-    box-shadow: 0 0 5px 1px #aaaaac;
+    box-shadow: 0 0 5px 1px #aaaaac81;
     margin-left: 5px;
   }
   .l-flex-end {
@@ -117,5 +117,8 @@ export default {
   border-radius: 50%;
   background-color: #eaedf3;
   margin-right: 7px;
+}
+.chunk-cursor {
+  cursor:pointer
 }
 </style>

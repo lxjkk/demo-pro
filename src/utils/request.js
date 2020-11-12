@@ -1,18 +1,17 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 // import Qs from 'qs'
-const baseUrl = 'https://h5a.opensns.cn/'
-// if (process.env.NODE_ENV === 'development') {
-//   baseUrl = 'http://localhost:8081/api'
-//   console.log('测试环境')
-// } else {
-//   baseUrl = 'http://www.lxjkk.icu:3000/api'
-//   console.log('生产环境')
-// }
+let baseUrl = 'https://h5a.opensns.cn/'
+if (process.env.NODE_ENV === 'development') {
+  baseUrl = 'http://mockjs.com/api'
+  console.log('测试环境')
+} else {
+  baseUrl = 'https://h5a.opensns.cn/'
+  console.log('生产环境')
+}
 const apiServer = axios.create({
   baseURL: baseUrl,
   timeout: 5000,
-  withCredentials: true,
   headers: {
     contentType: 'application/json'
 
@@ -22,7 +21,6 @@ const apiServer = axios.create({
 apiServer.interceptors.request.use(config => {
   return config
 }, err => {
-  localStorage.removeItem('token')
   return Promise.reject(err)
 })
 

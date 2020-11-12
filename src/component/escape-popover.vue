@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-popover v-model="visiblePopover" trigger="click">
-      <div slot="content" style="width: 100px;cursor:pointer" @click="$emit('agreement')">服务协议</div>
+      <div slot="content" style="width: 100px;cursor:pointer" @click="$emit('agreement');visiblePopover=false">服务协议</div>
       <div class="main-popover l-flex-allcenter">···</div>
     </a-popover>
   </div>

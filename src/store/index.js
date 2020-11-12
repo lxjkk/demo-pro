@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    is_admin: 'user'
+    is_admin: 'admin'
   },
   mutations: {
   },

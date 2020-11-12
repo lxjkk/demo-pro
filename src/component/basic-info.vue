@@ -5,32 +5,32 @@
         <a-col :span="6" style="margin-bottom: 16px">
           <div class="l-flex-align-center">
             服务状态：
-            <div :class="basicsData?'lamp-air':'lamp-gray'" />
-            <span>{{ basicsData?'正常':'停用' }}</span>
+            <div :class="basicsData.status?'lamp-air':'lamp-gray'" />
+            <span>{{ basicsData.status?'正常':'停用' }}</span>
           </div>
         </a-col>
         <a-col :span="6" style="margin-bottom: 16px">
           <div>
-            剩余收发量（条）：<span>{{ 10200 | toNum }}</span>
+            剩余收发量（条）：<span>{{ basicsData.num | toNum }}</span>
           </div>
         </a-col>
         <a-col :span="12" style="margin-bottom: 16px">
           <div>
-            开通日期：<span>{{ 12321321312 | openTime() }}</span>
+            开通日期：<span>{{ basicsData.create_time }}</span>
           </div>
         </a-col>
         <a-col :span="6" style="margin-bottom: 16px">
-          <div>网站域名：<a href="wwww.baidu.com">wwww.baidu.com</a></div>
+          <div>网站域名：<a :href="basicsData.url">{{basicsData.url}}</a></div>
         </a-col>
         <a-col :span="6" style="margin-bottom: 16px">
-          <div>联系人：<span>11112222333</span></div>
+          <div>联系人：<span>{{basicsData.username}}</span></div>
         </a-col>
       </a-row>
     </div>
 </template>
 
 <script>
-import transformTime from '@/utils/transformTime.js'
+// import transformTime from '@/utils/transformTime.js'
 import toThousands from '@/utils/toThousands.js'
 export default {
   props: {
@@ -40,11 +40,6 @@ export default {
     }
   },
   filters: {
-    openTime (val) {
-      if (val) {
-        return transformTime(val)
-      }
-    },
     toNum (val) {
       if (val) {
         return toThousands(val)

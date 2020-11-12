@@ -5,6 +5,9 @@
 </template>
 <script>
 export default {
+  created () {
+
+  },
   mounted () {
     document.querySelector('body').setAttribute('style', 'background-color:#E9F2F9')
   }

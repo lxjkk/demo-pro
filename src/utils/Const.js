@@ -44,6 +44,19 @@ const USER_TOP_UP_STATUS = {
   0: '返还',
   1: '充值'
 }
+const EXE_STATUS_OPTIONS = [
+  { label: '成功', value: 1 },
+  { label: '失败', value: 0 },
+  { label: '列队中', value: 2 }
+]
+const EXE_DEFAULT_LIST = [1, 0, 2]
+
+const EXE_STATUS_OPTIONS_USER = [
+  { label: '重置', value: 'inc' },
+  { label: '返还', value: 'dec' }
+]
+const EXE_DEFAULT_LIST_USER = ['inc', 'dec']
+
 const YourConsts = {}
 YourConsts.install = function (Vue, options) {
   Vue.prototype.$IM_LIST_CONFING_INFO = IM_LIST_CONFING_INFO
@@ -52,5 +65,9 @@ YourConsts.install = function (Vue, options) {
   Vue.prototype.$ANEW_UP_STATUS = ANEW_UP_STATUS
   Vue.prototype.$ANEW_UP_STATUS_DESC = ANEW_UP_STATUS_DESC
   Vue.prototype.$USER_TOP_UP_STATUS = USER_TOP_UP_STATUS
+  Vue.prototype.$EXE_STATUS_OPTIONS = EXE_STATUS_OPTIONS
+  Vue.prototype.$EXE_DEFAULT_LIST = EXE_DEFAULT_LIST
+  Vue.prototype.$EXE_STATUS_OPTIONS_USER = EXE_STATUS_OPTIONS_USER
+  Vue.prototype.$EXE_DEFAULT_LIST_USER = EXE_DEFAULT_LIST_USER
 }
 export default YourConsts

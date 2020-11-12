@@ -2,9 +2,9 @@
   <div class="main">
     <div class="main-title">
       <div><span v-text="isUser?'即时通讯IM':title"></span></div>
-      <div>
-        <a-button class="btn-data">导出数据</a-button>
-        <a-icon type="redo" />
+      <div class="l-flex-allcenter" >
+        <a-button class="btn-data" @click="deriveData">导出数据</a-button>
+        <a-icon type="redo" @click="getList" />
       </div>
     </div>
 
@@ -12,12 +12,12 @@
       <div class="l-flex-align-center">
         <div class="search-text">关键字：</div>
         <div class="search-inp">
-          <a-input placeholder="搜索网站名称、网站号、域名" />
+          <a-input v-model="form.keyword" placeholder="搜索网站名称、网站号、域名" />
         </div>
       </div>
       <div>
-        <a-button class="btn-m">重置</a-button>
-        <a-button type="primary">查询</a-button>
+        <a-button class="btn-m" @click="form.keyword='';getList()">重置</a-button>
+        <a-button type="primary" @click="getList">查询</a-button>
       </div>
     </div>
 
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div>
-        <a-table :data-source="data" :columns="columns" :pagination="false">
+        <a-table :rowKey="(record,index)=>{return index}" :data-source="data" :columns="columns" :pagination="false">
           <div slot="filterDropdown" slot-scope="{
               selectedKeys,
               column
@@ -75,7 +75,8 @@
           </template>
           <template slot="action" slot-scope="text,record">
             <div>
-              <a style="margin-right: 16px" @click="$router.push({path:'/tem/imserver/'+$route.params.id+'/details',query:{id: record}});"
+              <a style="margin-right: 16px"
+                @click="$router.push({path:'/admin/tem/imserver/details',query:{title: record.site_title,id:record.id }});"
                 href="javascript:;">详情</a>
               <a href="javascript:;" @click="showModal(record)">充值</a>
             </div>
@@ -83,16 +84,18 @@
         </a-table>
       </div>
       <div class="l-flex-end pagination">
-        <a-pagination show-quick-jumper :show-total="(total) => `共 ${total} 条`" :default-current="2" :total="500" />
+        <a-pagination v-if="count>0" show-quick-jumper :current="form.page" :show-total="(total) => `共 ${total} 条`"
+          :default-current="1" :total="count" @change="getList" />
       </div>
     </div>
 
-    <top-up :title="ModalTitle" :visible.sync="visible" />
+    <top-up :title="ModalTitle" :data="ModalData" :visible.sync="visible" @ok="ok" />
   </div>
 </template>
 
 <script>
-import { getImSiteList } from '@/api/get'
+import { getImSiteList, saveWebsitExport } from '@/api/get'
+import { recharge } from '@/api/post'
 import topUp from '@/component/top-up.vue'
 
 export default {
@@ -106,100 +109,20 @@ export default {
       listTitle: '站点列表',
       searchText: '',
       searchInput: null,
+      ModalData: {},
       ModalTitle: '',
       searchedColumn: '',
       ModalText: 'Content of the modal',
       visible: false,
       confirmLoading: false,
-      data: [
-        {
-          key: '1',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '2',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '3',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '4',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '5',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 0
-        },
-        {
-          key: '6',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '7',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '8',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        },
-        {
-          key: '9',
-          name: '短说社区',
-          age: 'DXasdas',
-          address: 'https://www.antdv.com/components/table-cn/',
-          version: '2.9.0',
-          strip: 20,
-          status: 1
-        }
-      ],
+      data: [],
+      derive_data: [],
       columns: [
         {
           title: '网站名称',
-          dataIndex: 'name',
+          dataIndex: 'site_title',
           width: 179,
-          key: 'name',
+          key: 'site_title',
           scopedSlots: {
             filterDropdown: 'filterDropdown',
             customRender: 'customRender'
@@ -216,9 +139,9 @@ export default {
         },
         {
           title: '网站号',
-          dataIndex: 'age',
+          dataIndex: 'site_order',
           width: 196,
-          key: 'www',
+          key: 'site_order',
           scopedSlots: {
             filterDropdown: 'filterDropdown',
             customRender: 'customRender'
@@ -235,8 +158,8 @@ export default {
         },
         {
           title: '域名',
-          dataIndex: 'address',
-          key: 'cn',
+          dataIndex: 'site_url',
+          key: 'site_url',
           scopedSlots: {
             filterDropdown: 'filterDropdown',
             customRender: 'customRender'
@@ -258,7 +181,7 @@ export default {
           title: '版本号',
           dataIndex: 'version',
           width: 120,
-          key: 'num',
+          key: 'version',
           scopedSlots: {
             filterDropdown: 'filterDropdown',
             customRender: 'customRender'
@@ -278,32 +201,34 @@ export default {
         },
         {
           title: '剩余首发量（条）',
-          dataIndex: 'strip',
+          dataIndex: 'num',
           width: 190,
           sorter: true,
           align: 'strip',
-          key: 'address'
+          key: 'num'
         },
         {
           title: '服务状态',
           dataIndex: 'status',
           width: 120,
           align: 'center',
-          key: 'state',
+          key: 'status',
           sorter: true,
           scopedSlots: { customRender: 'status' }
         },
         {
           title: '操作',
           dataIndex: 'address',
-          width: 120,
           key: 'x',
+          width: 120,
           scopedSlots: { customRender: 'action' }
         }
       ],
+      count: 0,
       form: {
         page: 1,
-        limit: 10
+        limit: 10,
+        keyword: ''
       }
     }
   },
@@ -313,10 +238,33 @@ export default {
   methods: {
     async getList () {
       try {
-        const { data } = await getImSiteList(this.form)
-        console.log(data)
+        const req = await getImSiteList(this.form)
+        this.data = req.data
+        this.count = req.count
       } catch (e) {
         console.log(e)
+      }
+    },
+    async deriveData () {
+      try {
+        const req = await saveWebsitExport()
+        console.log(req, '导出数据')
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    // 充值
+    async ok (form) {
+      console.log(form)
+      try {
+        const res = await recharge(form)
+        if (res.msg === 'ok') {
+          this.$message.success(res.data)
+        } else {
+          this.$message.error(res.data)
+        }
+      } catch (err) {
+        console.log(err)
       }
     },
     details (item) {
@@ -327,8 +275,14 @@ export default {
     },
     showModal (item) {
       console.log(item)
+      this.ModalData = {
+        id: item.id,
+        type: 1,
+        num: 0,
+        remark: ''
+      }
+      this.ModalTitle = item.site_title
       this.visible = true
-      this.ModalTitle = item.name
     },
     handleOk (e) {
       this.ModalText = 'The modal will be closed after two seconds'
@@ -347,102 +301,102 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .main {
-    @info-lamp: #909399;
-    @status-color: #1890ff;
-    color: #000000;
-    font-size: 14px;
-    padding-top: 9px;
-    .main-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .btn-data {
-        margin-right: 26px;
-      }
-      span {
-        font-size: 20px;
-        font-weight: 500;
-      }
+.main {
+  @info-lamp: #909399;
+  @status-color: #1890ff;
+  color: #000000;
+  font-size: 14px;
+  padding-top: 9px;
+  .main-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .btn-data {
+      margin-right: 26px;
     }
-
-    .main-search {
-      height: 90px;
-      background-color: #ffffff;
-      padding: 0 24px;
-      margin: 16px 0;
-      .search-text {
-        width: 60px;
-      }
-      .search-inp {
-        width: 290px;
-      }
-      .btn-m {
-        margin-right: 8px;
-      }
+    span {
+      font-size: 20px;
+      font-weight: 500;
     }
+  }
 
-    .main-list {
-      padding: 0 24px 24px 24px;
-      background-color: #ffffff;
-      .list-title {
-        height: 60px;
-        font-size: 16px;
+  .main-search {
+    height: 90px;
+    background-color: #ffffff;
+    padding: 0 24px;
+    margin: 16px 0;
+    .search-text {
+      width: 60px;
+    }
+    .search-inp {
+      width: 290px;
+    }
+    .btn-m {
+      margin-right: 8px;
+    }
+  }
+
+  .main-list {
+    padding: 0 24px 24px 24px;
+    background-color: #ffffff;
+    .list-title {
+      height: 60px;
+      font-size: 16px;
+    }
+    .list-data {
+      margin-bottom: 17px;
+      .info {
+        width: 80px;
+        color: @info-lamp;
+        &:nth-child(1) {
+          color: #000000;
+          font-weight: 500;
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            border-right: 1px solid #e7e9eb;
+          }
+        }
       }
-      .list-data {
-        margin-bottom: 17px;
-        .info {
-          width: 80px;
-          color: @info-lamp;
-          &:nth-child(1) {
-            color: #000000;
-            font-weight: 500;
-            position: relative;
-            &::after {
-              content: '';
-              position: absolute;
-              top: 0;
-              right: 0;
-              height: 100%;
-              border-right: 1px solid #e7e9eb;
-            }
-          }
+      .lamp {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 4px;
+        &:nth-child(1) {
         }
-        .lamp {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          margin-right: 4px;
-          &:nth-child(1) {
-          }
-          &:nth-child(2) {
-            background-color: #d9d9d9;
-          }
-        }
-        .lamp-on {
-          background-color: @status-color;
-        }
-        .lamp-off {
+        &:nth-child(2) {
           background-color: #d9d9d9;
         }
       }
-      .pagination {
-        margin-top: 16px;
+      .lamp-on {
+        background-color: @status-color;
+      }
+      .lamp-off {
+        background-color: #d9d9d9;
       }
     }
-    .status-lamp {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-    .lamp-on {
-      background-color: @status-color;
-    }
-    .lamp-off {
-      background-color: #d9d9d9;
+    .pagination {
+      margin-top: 16px;
     }
   }
+  .status-lamp {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  .lamp-on {
+    background-color: @status-color;
+  }
+  .lamp-off {
+    background-color: #d9d9d9;
+  }
+}
 .reset {
   color: #555658;
 }

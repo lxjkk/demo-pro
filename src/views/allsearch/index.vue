@@ -67,7 +67,7 @@
             </template>
             <template slot="action" slot-scope="text,record">
               <div>
-                <a style="margin-right: 16px" @click="$router.push({path:'/tem/allsearch/'+$route.params.id+'/details',query:{id: record}});"
+                <a style="margin-right: 16px" @click="$router.push({path:'/admin/tem/allsearch/details',query:{id: record}});"
                   href="javascript:;">详情</a>
                 <a href="javascript:;" @click="showModal(record)">充值</a>
               </div>

@@ -2,16 +2,17 @@
   <div class="main-breadcrumb">
     <a-breadcrumb>
       <a-breadcrumb-item v-for="(item, index) in levelList" :key="index">
-        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
+        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1"
+          class="no-redirect">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </a-breadcrumb-item>
     </a-breadcrumb>
-  <a-config-provider :locale="locale">
-    <transition name="fade-transform" mode="out-in">
-      <keep-alive>
-      <router-view :to="key"></router-view>
-      </keep-alive>
-    </transition>
+    <a-config-provider :locale="locale">
+      <transition name="fade-transform" mode="out-in">
+        <keep-alive>
+          <router-view :to="key"></router-view>
+        </keep-alive>
+      </transition>
     </a-config-provider>
   </div>
 </template>
@@ -20,6 +21,9 @@
 // eslint-disable-next-line no-unused-vars
 import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import pathToRegexp from 'path-to-regexp'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 
 export default {
   data () {
@@ -49,9 +53,7 @@ export default {
     // 面包屑
     getBreadcrumb () {
       const matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      console.log(this.$route.matched)
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-      console.log(this.levelList)
     },
     // 将 router :id 转换为正则用于面包屑回退参数消失
     pathCompile (path) {
@@ -61,6 +63,7 @@ export default {
     },
     // 面包屑跳转
     handleLink (item) {
+      console.log(item)
       const { redirect, path } = item
       if (redirect) {
         this.$router.push(redirect)
@@ -78,7 +81,7 @@ export default {
 }
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .fade-transform-enter {

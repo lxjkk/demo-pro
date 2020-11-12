@@ -18,7 +18,7 @@
     <a-row>
       <a-col>
         <div>
-          开通日期：<span>{{ dateTime | toDate }}</span>
+          开通日期：<span>{{ dateTime }}</span>
         </div>
       </a-col>
     </a-row>
@@ -40,8 +40,8 @@ export default {
       default: 0
     },
     dateTime: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     }
   },
   filters: {
